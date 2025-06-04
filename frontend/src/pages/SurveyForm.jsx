@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const initialState = {
   name: "",
@@ -82,7 +83,7 @@ export default function SurveyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.whatsappNumber || !form.collegeName || !form.yearOfStudy) {
-      alert("Please fill all required fields.");
+      toast.error("Please fill all required fields.");
       return;
     }
     try {
@@ -94,160 +95,178 @@ export default function SurveyForm() {
       if (res.ok) {
         navigate("/thankyou");
       } else {
-        alert("Submission failed. Try again.");
+        toast.error("Submission failed. Try again.");
       }
     } catch {
-      alert("Network error.");
+      toast.error("Network error.");
     }
   };
 
   return (
-    <form className="card bg-base-100 shadow-xl max-w-lg mx-auto mt-10 p-6 sm:p-8 space-y-4" onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold text-primary text-center mb-4">Tichi Survey</h2>
+    <div className="container">
+      <div className="card">
+        <form onSubmit={handleSubmit}>
+          <h2 className="text-center text-2xl font-bold mb-6 text-primary-dark">Tichi Survey</h2>
 
-      <div className="font-semibold text-accent">Section 1: Basics</div>
-      <div className="form-control">
-        <label className="label">Your Name (Optional)</label>
-        <input className="input input-bordered" name="name" value={form.name} onChange={handleChange} />
-      </div>
-      <div className="form-control">
-        <label className="label">Your Email *</label>
-        <input className="input input-bordered" name="email" type="email" value={form.email} onChange={handleChange} required />
-      </div>
-      <div className="form-control">
-        <label className="label">WhatsApp Number *</label>
-        <input className="input input-bordered" name="whatsappNumber" value={form.whatsappNumber} onChange={handleChange} required />
-      </div>
-      <div className="form-control">
-        <label className="label">College Name *</label>
-        <input className="input input-bordered" name="collegeName" value={form.collegeName} onChange={handleChange} required />
-      </div>
-      <div className="form-control">
-        <label className="label">Year of Study *</label>
-        <select className="select select-bordered" name="yearOfStudy" value={form.yearOfStudy} onChange={handleChange} required>
-          <option value="">Select</option>
-          <option>1st Year</option>
-          <option>2nd Year</option>
-          <option>3rd Year</option>
-          <option>4th Year</option>
-          <option>PG</option>
-        </select>
-      </div>
-      <div className="form-control">
-        <label className="label">Your City</label>
-        <input className="input input-bordered" name="city" value={form.city} onChange={handleChange} />
-      </div>
+          <div className="section">
+            <div className="section-title">Section 1: Basics</div>
+            <div className="form-group">
+              <label>Your Name (Optional)</label>
+              <input name="name" value={form.name} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label>Your Email *</label>
+              <input name="email" type="email" value={form.email} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>WhatsApp Number *</label>
+              <input name="whatsappNumber" value={form.whatsappNumber} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>College Name *</label>
+              <input name="collegeName" value={form.collegeName} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Year of Study *</label>
+              <select name="yearOfStudy" value={form.yearOfStudy} onChange={handleChange} required>
+                <option value="">Select</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>PG</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Your City</label>
+              <input name="city" value={form.city} onChange={handleChange} />
+            </div>
+          </div>
 
-      <div className="font-semibold text-accent mt-4">Section 2: What You Need</div>
-      <div className="form-control">
-        <label className="label">Have you ever looked for services like room rentals, assignments, or part-time jobs online?</label>
-        <select className="select select-bordered" name="lookedForServices" value={form.lookedForServices} onChange={handleChange}>
-          <option value="">Select</option>
-          <option>Yes</option>
-          <option>No</option>
-        </select>
-      </div>
-      <div className="form-control">
-        <label className="label">Which of these do you usually look for or offer?</label>
-        <div className="flex flex-wrap gap-3">
-          {serviceOptions.map((opt) =>
-            opt === "Other" ? (
-              <input
-                key={opt}
-                className="input input-bordered w-1/2"
-                placeholder="Other (please specify)"
-                value={otherService}
-                onChange={handleOtherService}
+          <div className="section">
+            <div className="section-title">Section 2: What You Need</div>
+            <div className="form-group">
+              <label>Have you ever looked for services like room rentals, assignments, or part-time jobs online?</label>
+              <select name="lookedForServices" value={form.lookedForServices} onChange={handleChange}>
+                <option value="">Select</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Which of these do you usually look for or offer?</label>
+              <div className="checkbox-group">
+                {serviceOptions.map((opt) =>
+                  opt === "Other" ? (
+                    <input
+                      key={opt}
+                      className="mt-2"
+                      placeholder="Other (please specify)"
+                      value={otherService}
+                      onChange={handleOtherService}
+                    />
+                  ) : (
+                    <div className="checkbox-item" key={opt}>
+                      <input
+                        type="checkbox"
+                        id={`service-${opt}`}
+                        name="services"
+                        value={opt}
+                        checked={form.services.includes(opt)}
+                        onChange={handleChange}
+                      />
+                      <label htmlFor={`service-${opt}`}>{opt}</label>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Where do you usually find these things now?</label>
+              <div className="checkbox-group">
+                {whereOptions.map((opt) =>
+                  opt === "Others" ? (
+                    <input
+                      key={opt}
+                      className="mt-2"
+                      placeholder="Others (please specify)"
+                      value={otherWhere}
+                      onChange={handleOtherWhere}
+                    />
+                  ) : (
+                    <div className="checkbox-item" key={opt}>
+                      <input
+                        type="checkbox"
+                        id={`where-${opt}`}
+                        name="whereFind"
+                        value={opt}
+                        checked={form.whereFind.includes(opt)}
+                        onChange={handleChange}
+                      />
+                      <label htmlFor={`where-${opt}`}>{opt}</label>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title">Section 3: The Tichi Idea</div>
+            <div className="form-group">
+              <label>Would you use this app to find stuff or offer your own services?</label>
+              <select name="wouldUseApp" value={form.wouldUseApp} onChange={handleChange}>
+                <option value="">Select</option>
+                <option>Yes! Sounds super useful</option>
+                <option>Maybe, depending on how it works</option>
+                <option>Nah, not really my thing</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>If you could post something useful or earn from it, what would you post?</label>
+              <input 
+                name="whatPost" 
+                value={form.whatPost} 
+                onChange={handleChange} 
+                placeholder="Eg: I take notes, I can find rooms, I edit videos, I know tutors, etc."
               />
-            ) : (
-              <label key={opt} className="label cursor-pointer gap-2">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  name="services"
-                  value={opt}
-                  checked={form.services.includes(opt)}
-                  onChange={handleChange}
-                />
-                <span className="label-text">{opt}</span>
-              </label>
-            )
-          )}
-        </div>
-      </div>
-      <div className="form-control">
-        <label className="label">Where do you usually find these things now?</label>
-        <div className="flex flex-wrap gap-3">
-          {whereOptions.map((opt) =>
-            opt === "Others" ? (
-              <input
-                key={opt}
-                className="input input-bordered w-1/2"
-                placeholder="Others (please specify)"
-                value={otherWhere}
-                onChange={handleOtherWhere}
-              />
-            ) : (
-              <label key={opt} className="label cursor-pointer gap-2">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  name="whereFind"
-                  value={opt}
-                  checked={form.whereFind.includes(opt)}
-                  onChange={handleChange}
-                />
-                <span className="label-text">{opt}</span>
-              </label>
-            )
-          )}
-        </div>
-      </div>
+            </div>
+            <div className="form-group">
+              <label>How much would you be okay paying to unlock a useful contact?</label>
+              <select name="payToUnlock" value={form.payToUnlock} onChange={handleChange}>
+                <option value="">Select</option>
+                <option>₹5</option>
+                <option>₹10</option>
+                <option>₹20</option>
+                <option>Depends on how useful it is</option>
+              </select>
+            </div>
+          </div>
 
-      <div className="font-semibold text-accent mt-4">Section 3: The Tichi Idea</div>
-      <div className="form-control">
-        <label className="label">Would you use this app to find stuff or offer your own services?</label>
-        <select className="select select-bordered" name="wouldUseApp" value={form.wouldUseApp} onChange={handleChange}>
-          <option value="">Select</option>
-          <option>Yes! Sounds super useful</option>
-          <option>Maybe, depending on how it works</option>
-          <option>Nah, not really my thing</option>
-        </select>
+          <div className="section">
+            <div className="section-title">Section 4: Be Part of Tichi's Journey</div>
+            <div className="form-group">
+              <label>Would you like early access to Tichi before the official launch?</label>
+              <select name="earlyAccess" value={form.earlyAccess} onChange={handleChange}>
+                <option value="">Select</option>
+                <option>Yes! Add me please</option>
+                <option>No thanks</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Want to be part of our "Tichi Campus Circle"?</label>
+              <select name="campusCircle" value={form.campusCircle} onChange={handleChange}>
+                <option value="">Select</option>
+                <option>Yes, sounds fun!</option>
+                <option>Maybe</option>
+                <option>Not right now</option>
+              </select>
+            </div>
+          </div>
+          
+          <button type="submit" className="mt-4">Submit</button>
+        </form>
       </div>
-      <div className="form-control">
-        <label className="label">If you could post something useful or earn from it, what would you post?</label>
-        <input className="input input-bordered" name="whatPost" value={form.whatPost} onChange={handleChange} />
-      </div>
-      <div className="form-control">
-        <label className="label">How much would you be okay paying to unlock a useful contact?</label>
-        <select className="select select-bordered" name="payToUnlock" value={form.payToUnlock} onChange={handleChange}>
-          <option value="">Select</option>
-          <option>₹5</option>
-          <option>₹10</option>
-          <option>₹20</option>
-          <option>Depends on how useful it is</option>
-        </select>
-      </div>
-
-      <div className="font-semibold text-accent mt-4">Section 4: Be Part of Tichi’s Journey</div>
-      <div className="form-control">
-        <label className="label">Would you like early access to Tichi before the official launch?</label>
-        <select className="select select-bordered" name="earlyAccess" value={form.earlyAccess} onChange={handleChange}>
-          <option value="">Select</option>
-          <option>Yes! Add me please</option>
-          <option>No thanks</option>
-        </select>
-      </div>
-      <div className="form-control">
-        <label className="label">Want to be part of our “Tichi Campus Circle”?</label>
-        <select className="select select-bordered" name="campusCircle" value={form.campusCircle} onChange={handleChange}>
-          <option value="">Select</option>
-          <option>Yes, sounds fun!</option>
-          <option>Maybe</option>
-          <option>Not right now</option>
-        </select>
-      </div>
-      <button className="btn btn-primary w-full mt-4" type="submit">Submit</button>
-    </form>
+    </div>
   );
 }
