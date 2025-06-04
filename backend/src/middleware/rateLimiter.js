@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 5,
+  max: 100,
   message: "Too many requests, please try again later.",
   handler: (req, res, next, options) => {
     console.log("Rate limit exceeded for IP:", req.ip);

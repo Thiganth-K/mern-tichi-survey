@@ -87,7 +87,9 @@ export default function SurveyForm() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:5001/api/survey", {
+      // Replace the hardcoded URL with:
+      // In production, you can just use a relative path
+      const res = await fetch("/api/survey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
